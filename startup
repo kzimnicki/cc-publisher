@@ -1,0 +1,43 @@
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:          startup
+# Required-Start:    $network $remote_fs $syslog
+# Required-Stop:     $network $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: startup
+### END INIT INFO
+
+usbdrive="/media/PENDRIVE/rpi"
+maxwait=30
+
+case "$1" in
+  start)
+     echo "Waiting for USB disk drive $usbdrive"
+     for (( i = 0; i <= $maxwait; i++ ))
+     do
+       if [ -d $usbdrive ]; then
+       	break
+       fi
+        echo -n "."
+        sleep 1
+     done
+
+     while true; do
+        screen -S zdf /home/pi/rpi/zdf.sh 
+     done
+    ;;
+  stop)
+    screen -X -S zdf kill
+    echo "Server shutting down"
+    ;;
+  *)
+    echo "Usage: /etc/init.d/startup.sh {start|stop}"
+    exit 1
+    ;;
+esac
+
+exit 0
+
+
