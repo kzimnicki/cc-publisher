@@ -1,0 +1,10 @@
+TODO:
+
+ - set very accurate ntp
+ - add timestamp tag in every  cc
+ - add golang to path in scripts
+ - refactor zdf.sh script
+ - refactor startup.sh 
+ - retest on refactored files with symbolic links (everyting should be in one directory)
+ 
+ 
