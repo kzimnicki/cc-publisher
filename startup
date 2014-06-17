@@ -11,6 +11,7 @@
 
 usbdrive="/media/PENDRIVE/rpi"
 maxwait=30
+HOME="/home/pi/cc-publisher"
 
 case "$1" in
   start)
@@ -18,14 +19,14 @@ case "$1" in
      for (( i = 0; i <= $maxwait; i++ ))
      do
        if [ -d $usbdrive ]; then
-       	break
+          break
        fi
         echo -n "."
         sleep 1
      done
 
      while true; do
-        screen -S zdf /home/pi/rpi/zdf.sh 
+        screen -S zdf $HOME/zdf.sh 
      done
     ;;
   stop)

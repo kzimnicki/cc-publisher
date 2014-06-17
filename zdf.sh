@@ -1,17 +1,28 @@
 #!/bin/bash
 
+log() {  # classic logger 
+   local prefix="[$(date +%Y/%m/%d\ %H:%M:%S)]: "
+   echo "${prefix} $@" >&2
+} 
 
-echo "$(date) start" >> /tmp/startup.log
-cd /home/pi/rpi/zvbi-0.2.35/test;
+GO_HOME="/home/pi/go/bin"
 
-echo "run tzap" -c /home/pi/.tzap/channels.conf >> /tmp/startup.log
-tzap "ZDF" -c /home/pi/.tzap/channels.conf 2> /dev/null &
+log "start"
 
-echo "sleep" >> /tmp/startup.log
+cd ${0%/*}
+
+log `pwd`
+
+log "run tzap"
+./rpi_dvbt_tools/tzap "ZDF" -c rpi_dvbt_tools/channels.conf 2> /dev/null &
+
+log "sleep 10 seconds"
 sleep 10
 
-echo "capture cc" >> /tmp/startup.log
+log "capture cc"
 
-./capture --device /dev/dvb/adapter0/demux0 --pid 551 --sliced | ./ttxfilter 777 | tee /media/PENDRIVE/rpi/zdf.cc.bin | ../../../go/bin/go run CCPublisher.go 2> /media/PENDRIVE/rpi/error.log 
-echo "end" >> /tmp/startup.log
+./rpi_dvbt_tools/capture --device /dev/dvb/adapter0/demux0 --pid 551 --sliced | ./rpi_dvbt_tools/ttxfilter 777 | tee /media/PENDRIVE/rpi/zdf.cc.bin | $GO_HOME/go run CCPublisher.go 2> /media/PENDRIVE/rpi/error.log 
 
+log "end"
+
+sleep 5
