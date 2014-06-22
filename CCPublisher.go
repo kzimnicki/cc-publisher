@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"time"
 	"io"
 	"os"
 	"strings"
@@ -31,9 +32,13 @@ func translate(b byte) string {
 	return letter
 }
 
-func httpPost(text string) {
-	log.Println(text)
-	resp, err := http.PostForm("http://explain.cc:8888/app/", url.Values{"v": {text}})
+func httpPost(line1 string, line2 string) {
+	log.Println("line1")
+	log.Println(line1)
+	log.Println("line2")
+	log.Println(line2)
+	t := time.Now()
+	resp, err := http.PostForm("http://explain.cc:8888/app/", url.Values{"l1": {line1}, "l2": {line2}, "t": {t.Format("20060102150405")}})
 	if err != nil {
 //		log.Fatalln(err)
 	} else {
@@ -47,10 +52,11 @@ func process() {
 	r := bufio.NewReader(os.Stdin)
 
 	var text = false
+	var line1 = ""
+	var line2 = ""
 	var counter = 0
 	var printed = false
-	var subtitle = ""
-	var doubleLine = false
+	var secondOrSingleLine = false
 
 	for true {
 		data := make([]byte, 200)
@@ -70,22 +76,27 @@ func process() {
 			}
 			if b == 0x8a {
 				counter++
-				if (!printed && !doubleLine) {
-					//					fmt.Println("|"+strings.TrimSpace(subtitle)+"|")
-					httpPost(strings.TrimSpace(subtitle))
+				if (!printed && !secondOrSingleLine) {
+					httpPost(strings.TrimSpace(line1), strings.TrimSpace(line2))
 					printed = true
-					subtitle = ""
+					line1 = ""
+					line2 = ""
 				}
 				text = false
 			}
 
 			if text {
-				subtitle += translate(b)
+				if secondOrSingleLine {
+					line1 += translate(b)
+				} else {
+					line2 += translate(b)
+				}
+
+
 			}
 
 			if b == 0x9b || b == 0x8c {
-				doubleLine = (b == 0x8c)
-				//				fmt.Printf("Start")
+				secondOrSingleLine = (b == 0x8c)
 				text = true
 				printed = false;
 			}
