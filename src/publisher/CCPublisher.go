@@ -7,7 +7,7 @@ import (
 	"io"
 	"os"
 	"strings"
-	"log"
+//	"log"
 	"net/http"
 	"net/url"
 )
@@ -33,10 +33,10 @@ func translate(b byte) string {
 }
 
 func httpPost(line1 string, line2 string) {
-	log.Println("line1")
-	log.Println(line1)
-	log.Println("line2")
-	log.Println(line2)
+	fmt.Println(len(line1), line1)
+//	log.Println(line1)
+	fmt.Println(len(line2), line2)
+//	log.Println(line2)
 	t := time.Now()
 	resp, err := http.PostForm("http://explain.cc:8888/app/", url.Values{"l1": {line1}, "l2": {line2}, "t": {t.Format("20060102150405")}})
 	if err != nil {
