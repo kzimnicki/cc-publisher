@@ -21,7 +21,7 @@ sleep 10
 
 log "capture cc"
 
-./rpi_dvbt_tools/capture --device /dev/dvb/adapter0/demux0 --pid 551 --sliced | ./rpi_dvbt_tools/ttxfilter 777 | tee /media/PENDRIVE/rpi/zdf.cc.bin | $GO_HOME/go run CCPublisher.go 2> /media/PENDRIVE/rpi/error.log 
+./rpi_dvbt_tools/capture --device /dev/dvb/adapter0/demux0 --pid 551 --sliced | ./rpi_dvbt_tools/ttxfilter 777 | tee -a /media/PENDRIVE/rpi/zdf.cc.bin | $GO_HOME/go run CCPublisher.go >> /media/PENDRIVE/rpi/error.log 
 
 log "end"
 
